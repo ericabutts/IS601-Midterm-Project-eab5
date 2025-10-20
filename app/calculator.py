@@ -26,6 +26,9 @@ class Calculator:
 
         # Ensure history directory exists
         self.config.history_dir.mkdir(parents=True, exist_ok=True)
+        
+        logging.info("Calculator initialized with configuration")
+        
         try:
             self.load_history()
         except Exception as e:

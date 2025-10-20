@@ -16,8 +16,7 @@ class CalculatorMemento:
 
     def to_dict(self) -> Dict[str, Any]:
         """
-        Serializes memento into dictionary.
-        Returns a dictionary containing the serialized state of the memento.
+        Serializes memento into dictionary. Returns a dictionary containing the serialized state of the memento.
         """
         return {
             'history': [calc.to_dict() for calc in self.history],

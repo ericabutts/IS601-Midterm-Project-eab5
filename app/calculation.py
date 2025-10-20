@@ -15,7 +15,7 @@ class Calculation:
     Value Object representing a single calculation.
     """
 
-    operation: str          # e.g., "add", "divide"
+    operation: str   
     operand1: Decimal
     operand2: Decimal
     result: Decimal = None
@@ -48,7 +48,7 @@ class Calculation:
         return operation_func(self.operand1, self.operand2)
 
     def _divide(self, a: Decimal, b: Decimal) -> Decimal:
-        """Handle division with zero check."""
+        """Handle division with zero check"""
         if b == 0:
             self._raise_div_zero()
         return a / b
