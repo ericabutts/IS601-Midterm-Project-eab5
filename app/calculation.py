@@ -1,6 +1,4 @@
-########################
-# Calculation Model    #
-########################
+# CALCULATION 
 
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -22,6 +20,52 @@ class Calculation:
     operand2: Decimal
     result: Decimal = None
     timestamp: datetime = field(default_factory=datetime.now)
+
+    def __post_init__(self):
+        """
+        Calculate the result after initialization if not provided.
+        """
+        if self.result is None:
+            self.result = self._compute_result()
+
+    def _compute_result(self) -> Decimal:
+        """
+        Compute the result based on the operation and operands.
+        """
+        operation_map = {
+            'add': lambda a, b: a + b,
+            'subtract': lambda a, b: a - b,
+            'multiply': lambda a, b: a * b,
+            'divide': self._divide,
+            'power': self._power,
+            'root': self._root
+        }
+        
+        operation_func = operation_map.get(self.operation.lower())
+        if not operation_func:
+            raise OperationError(f"Unknown operation: {self.operation}")
+        
+        return operation_func(self.operand1, self.operand2)
+
+    def _divide(self, a: Decimal, b: Decimal) -> Decimal:
+        """Handle division with zero check."""
+        if b == 0:
+            self._raise_div_zero()
+        return a / b
+
+    def _power(self, a: Decimal, b: Decimal) -> Decimal:
+        """Handle power operation with negative exponent check."""
+        if b < 0:
+            self._raise_neg_power()
+        return Decimal(pow(float(a), float(b)))
+
+    def _root(self, a: Decimal, b: Decimal) -> Decimal:
+        """Handle root operation with validation."""
+        if b == 0:
+            self._raise_invalid_root(a, b)
+        if a < 0:
+            self._raise_invalid_root(a, b)
+        return Decimal(pow(float(a), 1 / float(b)))
 
     @staticmethod
     def _raise_div_zero():  # pragma: no cover
