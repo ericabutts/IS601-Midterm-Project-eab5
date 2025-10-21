@@ -89,7 +89,7 @@ class CalculatorConfig:
         """
         return Path(os.getenv(
             'CALCULATOR_HISTORY_FILE',
-            str(self.base_dir / "calculator_history.csv")
+            str(self.history_dir / "calculator_history.csv")
         )).resolve()
     
 
