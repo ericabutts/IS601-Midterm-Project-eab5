@@ -7,12 +7,13 @@ import logging
 from typing import Any, Dict
 
 from app.exceptions import OperationError
+from app.operations import OperationFactory
 
 
 @dataclass
 class Calculation:
     """
-    Value Object representing a single calculation.
+    Object representing a single calculation.
     """
 
     operation: str   
@@ -23,74 +24,23 @@ class Calculation:
 
     def __post_init__(self):
         """
-        Calculate the result after initialization if not provided.
+        Calculate result after initialization if not provided.
         """
         if self.result is None:
             self.result = self._compute_result()
 
     def _compute_result(self) -> Decimal:
         """
-        Compute the result based on the operation and operands.
+        Compute the result using the Operation classes.
+        This delegates to the Operation strategy pattern instead of duplicating logic.
         """
-        operation_map = {
-            'add': lambda a, b: a + b,
-            'subtract': lambda a, b: a - b,
-            'multiply': lambda a, b: a * b,
-            'divide': self._divide,
-            'power': self._power,
-            'root': self._root
-        }
-        
-        operation_func = operation_map.get(self.operation.lower())
-        if not operation_func:
-            raise OperationError(f"Unknown operation: {self.operation}")
-        
-        return operation_func(self.operand1, self.operand2)
-
-    def _divide(self, a: Decimal, b: Decimal) -> Decimal:
-        """Handle division with zero check"""
-        if b == 0:
-            self._raise_div_zero()
-        return a / b
-
-    def _power(self, a: Decimal, b: Decimal) -> Decimal:
-        """Handle power operation with negative exponent check."""
-        if b < 0:
-            self._raise_neg_power()
-        return Decimal(pow(float(a), float(b)))
-
-    def _root(self, a: Decimal, b: Decimal) -> Decimal:
-        """Handle root operation with validation."""
-        if b == 0:
-            self._raise_invalid_root(a, b)
-        if a < 0:
-            self._raise_invalid_root(a, b)
-        return Decimal(pow(float(a), 1 / float(b)))
-
-    @staticmethod
-    def _raise_div_zero():  # pragma: no cover
-        """
-        Helper method to raise division by zero error.
-        """
-        raise OperationError("Division by zero is not allowed")
-
-    @staticmethod
-    def _raise_neg_power():  # pragma: no cover
-        """
-        Helper method to raise negative power error.
-        """
-        raise OperationError("Negative exponents are not supported")
-
-    @staticmethod
-    def _raise_invalid_root(x: Decimal, y: Decimal):  # pragma: no cover
-        """
-        Helper method to raise invalid root error.
-        """
-        if y == 0:
-            raise OperationError("Zero root is undefined")
-        if x < 0:
-            raise OperationError("Cannot calculate root of negative number")
-        raise OperationError("Invalid root operation")
+        try:
+            # Use the OperationFactory to get the appropriate operation
+            operation_instance = OperationFactory.create_operation(self.operation)
+            return operation_instance.execute(self.operand1, self.operand2)
+        except ValueError as e:
+            # OperationFactory raises ValueError for unknown operations
+            raise OperationError(str(e))
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -110,22 +60,27 @@ class Calculation:
         Create calculation from dictionary.
         """
         try:
-            # Create the calculation object with the original operands
+            # Store the saved result for comparison
+            saved_result = Decimal(data['result'])
+            
+            # Create the calculation object with the saved result
             calc = Calculation(
                 operation=data['operation'],
                 operand1=Decimal(data['operand1']),
                 operand2=Decimal(data['operand2']),
-                result=Decimal(data['result']),
+                result=saved_result,
                 timestamp=datetime.fromisoformat(data['timestamp'])
             )
 
-            # Verify the result matches (helps catch data corruption)
-            saved_result = Decimal(data['result'])
-            if calc.result != saved_result:
+            # Compute what the result should be
+            computed_result = calc._compute_result()
+            
+            # Verify the saved result matches the computed result
+            if saved_result != computed_result:
                 logging.warning(
                     f"Loaded calculation result {saved_result} "
-                    f"differs from computed result {calc.result}"
-                )  # pragma: no cover
+                    f"differs from computed result {computed_result}"
+                )
 
             return calc
 

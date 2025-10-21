@@ -22,7 +22,7 @@ def test_division():
     assert calc.result == Decimal("1")
 
 def test_division_by_zero():
-    with pytest.raises(OperationError, match="Division by zero is not allowed"):
+    with pytest.raises(OperationError, match="Division by zero"):
         Calculation(operation="divide", operand1=Decimal("1"), operand2=Decimal("0"))
 
 def test_power():
@@ -30,7 +30,7 @@ def test_power():
     assert calc.result == Decimal("4")
 
 def test_negative_power():
-    with pytest.raises(OperationError, match="Negative exponents are not supported"):
+    with pytest.raises(OperationError, match="Negative exponents not supported"):
         Calculation(operation="Power", operand1=Decimal("2"), operand2=Decimal("-3"))
 
 def test_root():

@@ -24,7 +24,6 @@ class Calculator:
         self.observers: List[HistoryObserver] = []
         self.operation_strategy: Optional[Operation] = None
 
-        # Ensure history directory exists
         self.config.history_dir.mkdir(parents=True, exist_ok=True)
         
         logging.info("Calculator initialized with configuration")
