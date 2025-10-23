@@ -94,7 +94,7 @@ def calculator_repl():
                         print(f"Error loading history: {e}")
                     continue
 
-                if command in ['add', 'subtract', 'multiply', 'divide', 'power', 'root']:
+                if command in ['add', 'subtract', 'multiply', 'divide', 'power', 'root', 'integerdivision', 'modulus', 'percentage', 'absolutedifference']:
                     print("\nEnter numbers (or 'cancel' to abort):")
                     a = input("First number: ")
                     if a.lower() == 'cancel':

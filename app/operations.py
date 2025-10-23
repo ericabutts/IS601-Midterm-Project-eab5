@@ -7,7 +7,7 @@ class Operation:
         raise NotImplementedError
 
     def __str__(self) -> str:
-        return self.__class__.__name__.lower()
+        return self.__class__.__name__.replace("Operation", "").lower()
 
 
 class AddOperation(Operation):
@@ -47,6 +47,31 @@ class RootOperation(Operation):
             raise OperationError("Zero root is undefined")
         return Decimal(pow(float(a), 1 / float(b)))
 
+class ModulusOperation(Operation):
+    def execute(self, a: Decimal, b: Decimal) -> Decimal:
+        if b == 0:
+            raise OperationError("Division by zero")
+        return a % b
+    
+class IntegerDivisionOperation(Operation):
+    """Perform division that results in an integer quotient, discarding any fractional part."""
+    def execute(self, a: Decimal, b: Decimal) -> Decimal:
+        if b == 0:
+            raise OperationError("Division by zero")
+        return a / b
+    
+class PercentageOperation(Operation):
+    def execute(self, a: Decimal, b: Decimal) -> Decimal:
+        if b == 0:
+            raise OperationError("Division by zero")
+        return (a / b) * 100
+    
+class AbsoluteDifferenceOperation(Operation):
+    def execute(self, a: Decimal, b: Decimal):
+        diff = a - b
+        if diff < 0:
+            diff = -diff
+        return diff
 
 class OperationFactory:
     """Factory for creating operation instances by name."""
@@ -56,7 +81,11 @@ class OperationFactory:
         'multiply': MultiplyOperation,
         'divide': DivideOperation,
         'power': PowerOperation,
-        'root': RootOperation
+        'root': RootOperation,
+        'modulus': ModulusOperation,
+        'integerdivision': IntegerDivisionOperation,
+        'percentage': PercentageOperation,
+        'absolutedifference': AbsoluteDifferenceOperation
     }
 
     @classmethod

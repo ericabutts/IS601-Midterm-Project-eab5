@@ -27,6 +27,9 @@ The following commands are available:
     redo:
         Restore the most recently deleted calculation.
 
+    clear:
+        Clears all history of calculations from the session.
+
     save: 
         Save all calculations to a history file.
 

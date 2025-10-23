@@ -1,6 +1,5 @@
 operation,operand1,operand2,result,timestamp
-addoperation,1,1,2,2025-10-23T14:44:53.106014
-poweroperation,1,1,1,2025-10-23T14:55:58.125229
-poweroperation,2,2,4,2025-10-23T14:56:03.308854
-poweroperation,5,5,3125,2025-10-23T14:56:10.489882
-poweroperation,5,2,25,2025-10-23T14:56:19.072511
+integerdivision,1,1,1,2025-10-23T15:17:59.068213
+percentage,100,20,500,2025-10-23T15:18:38.018030
+percentage,1,1,100,2025-10-23T15:19:09.980362
+absolutedifference,1,10,9,2025-10-23T15:21:27.149101
