@@ -4,7 +4,7 @@ This project is a command-line Read Evaluate Print Loop (REPL) calculator applic
 
 Installation Instructions: Steps to set up the virtual environment and install dependencies.
 
-    git clone <repo link>
+    git clone https://github.com/ericabutts/IS601-Midterm-Project-eab5.git
     cd IS601_MIDTERM_MODULE
     pip install -m requirements.txt
 
@@ -144,5 +144,3 @@ CI/CD Information: Overview of GitHub Actions workflow and its purpose.
     The tests will fail if the changes result in less than 90% coverage.
 
     You can view the workflow status in your repository under Actions → Workflows.
-
-Include instructions on setting up .env files and configuring logging.

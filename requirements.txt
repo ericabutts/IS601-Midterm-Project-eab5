@@ -26,3 +26,5 @@ dotenv
 pandas
 pytest-cov
 colorama
+fastapi
+uvicorn
