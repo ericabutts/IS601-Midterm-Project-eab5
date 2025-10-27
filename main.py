@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.calculator import Calculator
-from app.operations import AddOperation
+from app.operations import AddOperation, SubtractOperation, OperationFactory
 
 print("Calculator imported:", Calculator)
 print("AddOperation imported:", AddOperation)
@@ -20,11 +20,17 @@ app.add_middleware(
 # Create calculator instance
 calc = Calculator()
 
-@app.get("/add")
-def api_add(a: float, b: float):
-    calc.set_operation(AddOperation())
-    result = calc.perform_operation(a, b)
-    return {"result": float(result)}
+@app.get("/calculate/{op_name}")
+def api_add(op_name: str, a: float, b: float):
+    try:
+        operation = OperationFactory.create_operation(op_name)
+        calc.set_operation(operation)
+        result = calc.perform_operation(a, b)
+        return {"result": float(result)}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 
 # CLI REPL (optional)
 if __name__ == "__main__":
