@@ -28,3 +28,4 @@ pytest-cov
 colorama
 fastapi
 uvicorn
+httpx
